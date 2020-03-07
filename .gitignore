@@ -1,0 +1,17 @@
+build/
+dist/
+*~
+*.egg
+*.egg-info
+*.pyc
+*.pyo
+*.swp
+*.mak.py
+*.DS_Store
+.coverage
+.idea
+.noseids
+.project
+.pydevproject
+.settings
+nosetests.xml
