@@ -38,6 +38,20 @@ class TestChatClient(unittest.TestCase):
 
         connection_spy.broadcast.assert_called_with(("User 1: Hello World"))
 
+    def test_client_fetch_messages(self):
+        client = ChatClient("User 1")
+        client.connection = unittest.mock.Mock()
+        client.connection.get_messages.return_value = ["message1", "message2"]
+
+        starting_messages = client.fetch_messages()
+        client.connection.get_messages().append("message3")
+        new_messages = client.fetch_messages()
+
+        assert starting_messages == ["message1", "message2"]
+        assert new_messages == ["message3"]
+
+
+
 class TestConnection(unittest.TestCase):
     def test_broadcast(self):
         with unittest.mock.patch.object(Connection, "connect"):
@@ -49,21 +63,11 @@ class TestConnection(unittest.TestCase):
             assert c.get_messages()[-1] == "some message"
 
     def test_exchange_with_server(self):
-        import multiprocessing.managers
-        multiprocessing.managers.listener_client["fake"] = (None, FakeServer())
-        c1 = Connection(("localhost", 9090), serializer="fake")
-        c2 = Connection(("localhost", 9090), serializer="fake")
-
-        c1.broadcast("connected message")
-        
-        assert c2.get_messages()[-1] == "connected message"
-
-
-class TestConnectionServerE2E(unittest.TestCase):
-    def test_broadcast_server(self):
-        with new_chat_server() as srv:
-            c1 = Connection(srv.address)
-            c2 = Connection(srv.address)
+        with unittest.mock.patch("multiprocessing.managers.listener_client", new={
+            "pickle": (None, FakeServer())
+        }):
+            c1 = Connection(("localhost", 9090))
+            c2 = Connection(("localhost", 9090))
 
             c1.broadcast("connected message")
             
@@ -74,11 +78,18 @@ class ChatClient:
     def __init__(self, nickname):
         self.nickname = nickname
         self._connection = None
+        self._last_msg_idx = 0
 
     def send_message(self, message):
         sent_message = "{}: {}".format(self.nickname, message)
         self.connection.broadcast(sent_message)
         return sent_message
+
+    def fetch_messages(self):
+        messages = list(self.connection.get_messages())
+        new_messages = messages[self._last_msg_idx:]
+        self._last_msg_idx = len(messages)
+        return new_messages
 
     @property
     def connection(self):
