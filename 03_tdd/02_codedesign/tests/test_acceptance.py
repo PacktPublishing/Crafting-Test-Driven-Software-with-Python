@@ -5,7 +5,7 @@ import tempfile
 import pathlib
 
 from todo.app import TODOApp
-#from todo.db import BasicDB
+from todo.db import BasicDB
 
 
 class TestTODOAcceptance(unittest.TestCase):

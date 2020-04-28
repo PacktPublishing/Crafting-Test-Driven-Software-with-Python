@@ -1,7 +1,5 @@
 import unittest
 from unittest.mock import Mock
-import tempfile
-from pathlib import Path
 
 
 from todo.app import TODOApp 
@@ -16,7 +14,6 @@ class TestTODOApp(unittest.TestCase):
 
         assert app._entries == []
 
-        
     def test_load(self):
         dbmanager = Mock(
             load=Mock(return_value=["buy milk", "buy water"])
@@ -28,3 +25,15 @@ class TestTODOApp(unittest.TestCase):
 
         dbmanager.load.assert_called_with()
         assert app._entries == ["buy milk", "buy water"]
+
+    def test_save(self):
+        dbmanager = Mock(
+            load=Mock(return_value=["buy milk", "buy water"]),
+            save=Mock()
+        )
+
+        app = TODOApp(io=(Mock(return_value="quit"), Mock()), 
+                      dbmanager=dbmanager)
+        app.run()
+
+        dbmanager.save.assert_called_with(["buy milk", "buy water"])
