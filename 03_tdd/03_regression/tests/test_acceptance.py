@@ -1,8 +1,11 @@
 import unittest
 import threading
 import queue
+import tempfile
+import pathlib
 
 from todo.app import TODOApp
+from todo.db import BasicDB
 
 
 class TestTODOAcceptance(unittest.TestCase):
@@ -62,3 +65,53 @@ class TestTODOAcceptance(unittest.TestCase):
         app_thread.join(timeout=1)
 
         self.assertEqual(self.get_output(), "bye!\n")
+
+    def test_persistence(self):
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            app_thread = threading.Thread(
+                target=TODOApp(
+                    io=(self.fake_input, self.fake_output),
+                    dbmanager=BasicDB(pathlib.Path(tmpdirname, "db"))
+                ).run, 
+                daemon=True
+            )
+            app_thread.start()
+
+            # First time the app starts it's empty.
+            welcome = self.get_output()
+            self.assertEqual(welcome, (
+                "TODOs:\n"
+                "\n"
+                "\n"
+                "> "
+            ))
+
+            self.send_input("add buy milk")
+            self.send_input("quit")
+            app_thread.join(timeout=1)
+
+            while True:
+                try:
+                    self.get_output()
+                except queue.Empty:
+                    break
+            
+            app_thread = threading.Thread(
+                target=TODOApp(
+                    io=(self.fake_input, self.fake_output),
+                    dbmanager=BasicDB(pathlib.Path(tmpdirname, "db"))
+                ).run, 
+                daemon=True
+            )
+            app_thread.start()
+
+            welcome = self.get_output()
+            self.assertEqual(welcome, (
+                "TODOs:\n"
+                "1. buy milk\n"
+                "\n"
+                "> "
+            ))
+
+            self.send_input("quit")
+            app_thread.join(timeout=1)

@@ -1,28 +1,28 @@
 import functools
-import shelve
+
 
 class TODOApp:
-    def __init__(self, io=(input, functools.partial(print, end=""))):
+    def __init__(self, 
+                 io=(input, functools.partial(print, end="")), 
+                 dbmanager=None):
         self._in, self._out = io
         self._quit = False
-        self._db = None
         self._entries = []
-
-    def _load(self):
-        self._db = shelve.open("todo.shelve", writeback=True)
-        try:
-            self._entries = self._db["entries"]
-        except KeyError:
-            self._entries = self._db["entries"] = []
+        self._dbmanager = dbmanager
 
     def run(self):
-        # self._load()
+        if self._dbmanager is not None:
+            self._entries = self._dbmanager.load()
+
         self._quit = False
         while not self._quit:
             self._out(self.prompt(self.items_list()))
             command = self._in()
             self._dispatch(command)
-        # self._db.close()
+
+        if self._dbmanager is not None:
+            self._dbmanager.save(self._entries)
+        
         self._out("bye!\n")
 
     def prompt(self, output):
@@ -32,7 +32,10 @@ class TODOApp:
 > """.format(output)
 
     def items_list(self):
-        return "\n".join("{}. {}".format(idx, entry) for idx, entry in enumerate(self._entries, start=1))
+        enumerated_items = enumerate(self._entries, start=1)
+        return "\n".join(
+            "{}. {}".format(idx, entry) for idx, entry in enumerated_items
+        )
 
     def _dispatch(self, cmd):
         cmd, *args = cmd.split(" ", 1)
