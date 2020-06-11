@@ -35,4 +35,3 @@ class ChatClient:
         if self._connection is None:
             self._connection = self._connection_provider(("localhost", 9090))
         return self._connection
-

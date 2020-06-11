@@ -1,0 +1,18 @@
+language: python
+
+os: linux
+dist: xenial
+
+python:
+  - 3.7
+  - &mainstream_python 3.8
+  - nightly
+
+install:
+  - "pip install -e src"
+
+script:
+  - "python -m unittest discover tests -v"
+
+after_success:
+  - "python -m unittest discover benchmarks -v"
