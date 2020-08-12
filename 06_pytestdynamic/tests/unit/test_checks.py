@@ -1,16 +1,24 @@
+import pytest
+
 from fizzbuzz import isfizz, isbuzz
 
-# Move to parametric tests
-def test_isfizz():
-    assert isfizz(1) is False
-    assert isfizz(3) is True
-    assert isfizz(4) is False
-    assert isfizz(6) is True
+@pytest.mark.parametrize("n,res", [
+    (1, False), 
+    (3, True), 
+    (4, False), 
+    (6, True)
+])
+def test_isfizz(n, res):
+    assert isfizz(n) is res
 
 
-def test_isbuzz():
-    assert isbuzz(1) is False
-    assert isbuzz(3) is False
-    assert isbuzz(5) is True
-    assert isbuzz(6) is False
-    assert isbuzz(10) is True
+@pytest.fixture(scope="function")
+def divisible_by5(n):
+    return n % 5 == 0
+
+
+@pytest.mark.parametrize("n", [
+    1, 3, 5, 6, 10    
+])
+def test_isbuzz(n, divisible_by5):
+    assert isbuzz(n) is divisible_by5

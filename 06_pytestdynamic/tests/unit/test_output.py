@@ -1,18 +1,45 @@
+import pytest
+
+import fizzbuzz
 from fizzbuzz import outfizz, outbuzz, endnum
 
 
-def test_outfizz(capsys):
-    outfizz()
+@pytest.fixture(params=["fizz", "buzz"])
+def expected_output(request):
+    text = request.param
+    if request.config.getoption("--upper"):
+        text = text.upper()
+    
+    textcasemarker = request.node.get_closest_marker("textcase")
+    if textcasemarker:
+        textcase, = textcasemarker.args
+        if textcase == "upper":
+            text = text.upper()
+        elif textcase == "lower":
+            text = text.lower()
+        else:
+            raise ValueError("Invalid Test Marker")
+    
+    yield getattr(fizzbuzz, "out{}".format(request.param)), text
+
+
+def test_output(expected_output, capsys):
+    func, expected = expected_output
+
+    func()
 
     out, _ = capsys.readouterr()
-    assert out == "fizz"
+    assert out == expected
 
 
-def test_outbuzz(capsys):
-    outbuzz()
+@pytest.mark.textcase("lower")
+def test_lowercase_output(expected_output, capsys):
+    func, expected = expected_output
+
+    func()
 
     out, _ = capsys.readouterr()
-    assert out == "buzz"
+    assert out == expected
 
 
 class TestEndNum:
