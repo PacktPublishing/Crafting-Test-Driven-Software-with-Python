@@ -1,5 +1,7 @@
 import contacts
 
+from pytest_bdd import scenario, given, when, then, parsers
+
 
 class TestAddingEntries:
     def test_basic(self):
@@ -55,3 +57,31 @@ class TestAddingEntries:
         assert app._contacts == [
             ("NAME", "3345554433")
         ]
+
+
+class TestDetingEntries:
+    @staticmethod
+    @scenario("../acceptance/delete_contact.feature", 
+              "Removing a Basic Contact")
+    def test_deleting_contacts(*args):
+        pass
+
+    @staticmethod
+    @given("I have a contact book")
+    def contactbook():
+        return contacts.Application()
+
+    @staticmethod
+    @given(parsers.parse("I have a \"{contactname}\" contact"))
+    def have_a_contact(contactbook, contactname):
+        contactbook.add(contactname, "000")
+
+    @staticmethod
+    @when(parsers.parse("I run the \"{command}\" command"))
+    def runcommand(contactbook, command):
+        contactbook.run(command)
+
+    @staticmethod
+    @then("My contacts book is now empty")
+    def emptylist(contactbook):
+        assert contactbook._contacts == []

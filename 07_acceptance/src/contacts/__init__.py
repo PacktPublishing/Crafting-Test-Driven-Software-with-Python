@@ -23,17 +23,20 @@ class Application:
             except ValueError as err:
                 print(err)
                 return
+        elif cmd == "del":
+            self.delete(args)
         else:
             raise ValueError(f"Invalid command: {cmd}")
 
     def save(self):
-        print(self._contacts)
         with open("./contacts.json", "w+") as f:
             json.dump({"_contacts": self._contacts}, f)
         
     def load(self):
         with open("./contacts.json") as f:
-            self._contacts = [tuple(t) for t in json.load(f)["_contacts"]]
+            self._contacts = [
+                tuple(t) for t in json.load(f)["_contacts"]
+            ]
 
     def add(self, name, phonenum):
         if not isinstance(phonenum, str):
@@ -43,6 +46,12 @@ class Application:
             raise ValueError(f"Invalid phone number: {phonenum}")
 
         self._contacts.append((name, phonenum))
+        self.save()
+
+    def delete(self, name):
+        self._contacts = [
+            c for c in self._contacts if c[0] != name
+        ]
         self.save()
 
 
