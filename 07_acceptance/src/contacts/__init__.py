@@ -14,7 +14,10 @@ class Application:
     def run(self, text):
         text = text.strip()
         _, cmd = text.split(maxsplit=1)
-        cmd, args = cmd.split(maxsplit=1)
+        try:
+            cmd, args = cmd.split(maxsplit=1)
+        except ValueError:
+            args = None
 
         if cmd == "add":
             name, num = args.rsplit(maxsplit=1)
@@ -25,6 +28,8 @@ class Application:
                 return
         elif cmd == "del":
             self.delete(args)
+        elif cmd == "ls":
+            self.printlist()
         else:
             raise ValueError(f"Invalid command: {cmd}")
 
@@ -53,6 +58,10 @@ class Application:
             c for c in self._contacts if c[0] != name
         ]
         self.save()
+
+    def printlist(self):
+        for c in self._contacts:
+            print(f"{c[0]} {c[1]}")
 
 
 def main():
