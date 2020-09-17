@@ -65,4 +65,7 @@ class Application:
 
 
 def main():
-    raise NotImplementedError()
+    import sys
+    a = Application()
+    a.load()
+    a.run(' '.join(sys.argv))
