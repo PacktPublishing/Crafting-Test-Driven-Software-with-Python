@@ -20,8 +20,8 @@ class Application:
             args = None
 
         if cmd == "add":        
-            name, num = args.rsplit(maxsplit=1)    
             try:
+                name, num = args.rsplit(maxsplit=1)    
                 self.add(name, num)
             except ValueError as err:
                 print(err)
