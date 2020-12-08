@@ -3,6 +3,15 @@ import json
 
 
 class Application:
+    """Manages a contact book serving the provided commands.
+
+    The contact book itself is saved in a contacts.json file
+    in the same directory where the application is started
+    and it's loaded back on every new run.
+
+    A contact is composed by any name followed by a valid
+    phone number.
+    """
     PHONE_EXPR = re.compile('^[+]?[0-9]{3,}$')
 
     def __init__(self):
@@ -12,6 +21,22 @@ class Application:
         self._contacts = []
 
     def run(self, text):
+        """Run a provided command.
+
+        :param str text: The string containing the command to run.
+
+        Takes the command to run as a string as it would
+        come from the shell, parses it and runs it.
+
+        Each command can support zero or multiple arguments
+        separate by an empty space.
+
+        Currently supported commands are:
+
+         - add
+         - del
+         - ls
+        """
         text = text.strip()
         _, cmd = text.split(maxsplit=1)
         try:
@@ -21,7 +46,11 @@ class Application:
 
         if cmd == "add":        
             try:
-                name, num = args.rsplit(maxsplit=1)    
+                name, num = args.rsplit(maxsplit=1)
+            except ValueError:
+                print("A contact must provide a name and phone number")
+                return
+            try:
                 self.add(name, num)
             except ValueError as err:
                 print(err)

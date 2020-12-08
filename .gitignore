@@ -15,3 +15,8 @@ dist/
 .pydevproject
 .settings
 nosetests.xml
+.hypothesis
+.vscode
+venv
+contacts.json
+todo.data

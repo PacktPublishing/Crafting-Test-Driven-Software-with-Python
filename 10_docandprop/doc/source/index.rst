@@ -11,7 +11,7 @@ Welcome to Doc's documentation!
    :caption: Contents:
 
    contacts
-
+   reference
 
 Indices and tables
 ==================
