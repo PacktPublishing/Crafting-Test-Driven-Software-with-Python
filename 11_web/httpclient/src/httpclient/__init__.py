@@ -4,8 +4,9 @@ import requests
 
 
 class HTTPClient:
-    def __init__(self, url):
+    def __init__(self, url, requests=requests):
         self._url = url
+        self._requests = requests
 
     def follow(self, path):
         baseurl = self._url
@@ -14,13 +15,13 @@ class HTTPClient:
         return HTTPClient(urllib.parse.urljoin(baseurl, path))
 
     def GET(self):
-        return requests.get(self._url).text
+        return self._requests.get(self._url).text
 
     def POST(self, **kwargs):
-        return requests.post(self._url, data=kwargs).text
+        return self._requests.post(self._url, kwargs).text
 
     def DELETE(self):
-        return requests.delete(self._url).text
+        return self._requests.delete(self._url).text
 
 
 def parse_args():
