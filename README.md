@@ -1,6 +1,6 @@
 # Crafting Test-Driven Software with Python
 
-<a href="https://www.packtpub.com/product/crafting-test-driven-software-with-python/9781838642655"><img src="Cover Image URL of the Book" alt="Book Name" height="256px" align="right"></a>
+<a href="https://www.packtpub.com/product/crafting-test-driven-software-with-python/9781838642655"><img src="https://static.packt-cdn.com/products/9781838642655/cover/smaller" alt="Book Name" height="256px" align="right"></a>
 
 This is the code repository for [Crafting Test-Driven Software with Python](https://www.packtpub.com/product/crafting-test-driven-software-with-python/9781838642655), published by Packt.
 
