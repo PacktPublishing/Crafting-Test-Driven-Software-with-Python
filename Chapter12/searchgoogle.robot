@@ -17,7 +17,7 @@ Search On Google
      Run Keyword If    ${NOTHEADLESS}    Submit Form      //form
      Unselect Frame
      Input Text     name=q   Stephen\ Hawking
-     Wait Until Element Is Visible   name=btnK
+     Press Keys     name=q   SPACE
      Press Keys     name=q   ENTER
      Wait Until Page Contains Element   id=res
      Page Should Contain   Wikipedia
