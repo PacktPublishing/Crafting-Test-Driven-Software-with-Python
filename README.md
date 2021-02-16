@@ -43,6 +43,7 @@ With the following software and hardware list you can run all code files present
 | Chapter  | Software required                   | OS required                        |
 | -------- | ------------------------------------| -----------------------------------|
 | 1-12     | Python 3.9,3.8 or 3.7               | Windows, Mac OS X, and Linux (Any) |
+| 5-10     | PyTest 6.0.2+                       | Windows, Mac OS X, and Linux (Any) |
 | 1-12     | pip 18+                             | Windows, Mac OS X, and Linux (Any) |
 | 1-12     | Google Chrome or Firefox            | Windows, Mac OS X, and Linux (Any) |
 
