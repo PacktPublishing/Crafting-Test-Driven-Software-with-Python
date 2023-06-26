@@ -107,6 +107,7 @@ class Connection(SyncManager):
 class FakeServer:
     def __init__(self):
         self.last_command = None
+        self.last_args = None
         self.messages = []
 
     def __call__(self, *args, **kwargs):
